@@ -4,7 +4,6 @@
     },
     "editor.formatOnSave": true,
     "python.formatting.provider": "autopep8",
-    "python.pythonPath": "venv\\Scripts\\python.exe",
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestArgs": [
         "tests"

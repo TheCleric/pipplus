@@ -1,0 +1,48 @@
+[project]
+name = "ppm"
+version = "0.0.1"
+author = "Adam Weeden"
+author_email = "adamweeden@gmail.com"
+description = "a package manager for python"
+readme = "README.md"
+long_description = "file: README.md"
+long_description_content_type = "text/markdown"
+url = "https://github.com/TheCleric/ppm"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: LGPL License",
+    "Operating System :: OS Independent",
+]
+python_requires = ">=3"
+keywords = "packages packaging"
+install_requires = []
+include_package_data = true
+
+[project.extras_require]
+dev = [
+    "autopep8>=1.5.4",
+    "setuptools>=50.3.0",
+    "toml>=0.10.1"
+]
+test = [
+    "pylint>=2.6.0",
+    "pytest>=6.0.2",
+    "mypy>=0.782",
+    "pytest-cov>=2.10.1"
+]
+
+[project.entry_points]
+console_scripts = [
+    "ppm=ppm.ppm:main"
+]
+
+[build-system]
+requires = [
+    "setuptools>=40.8.0",
+    "wheel>=0.35.1",
+    "toml>=0.10.1"
+]
+build-backend = "setuptools.build_meta"

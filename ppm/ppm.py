@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+
 def main() -> None:
-    pass
+    print("PPM MAIN")
 
 
 if __name__ == "__main__":

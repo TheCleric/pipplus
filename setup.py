@@ -26,10 +26,18 @@ setuptools.setup(
     ],
     python_requires='>=3',
     keywords='packages packaging',
-    packages=setuptools.find_packages(exclude=["tests", "tests.*"]),
+    packages=setuptools.find_packages(
+        exclude=[
+            "tests",
+            "tests.*",
+        ],
+    ),
     install_requires=[],
     extras_require={
-        'dev': [],
+        'dev': [
+            'autopep8>=1.5.4',
+            'setuptools>=50.3.0',
+        ],
         'test': [
             'pylint>=2.6.0',
             'pytest>=6.0.2',

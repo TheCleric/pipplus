@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+from . import actions
+
 
 def main() -> None:
-    print("PPM MAIN")
+    actions.process()
 
 
 if __name__ == "__main__":

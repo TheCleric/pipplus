@@ -5,10 +5,10 @@ import os
 import sys
 from typing import Any, List, Optional, Sequence, Union
 
-from .ppm_command import DEFAULT_TOML_FILENAME, PPMCommand, SubCommandAction
+from .pipplus_command import DEFAULT_TOML_FILENAME, PipPlusCommand, SubCommandAction
 
 
-class RunCommand(PPMCommand):
+class RunCommand(PipPlusCommand):
     _TOML_SECTION = 'scripts'
 
     def __init__(self, arg_parser: argparse._SubParsersAction, extras: Optional[List[str]] = None,
@@ -17,7 +17,7 @@ class RunCommand(PPMCommand):
         self.run_parser = arg_parser.add_parser(
             'run-script',
             aliases=['run'],
-            description="Run a script set in the [tools.ppm.scripts] table of the {}".format(toml_filename),
+            description="Run a script set in the [tools.pipplus.scripts] table of the {}".format(toml_filename),
         )
         self.run_parser.add_argument(
             'run_command',
@@ -33,7 +33,7 @@ class RunCommand(PPMCommand):
                 values: Union[str, Sequence[Any], None], option_string: Optional[str] = None) -> None:
         if values not in self.toml or not self.toml[values]:
             raise ValueError(
-                "Could not find script '{}' in [tool.ppm.{}] in {}".format(
+                "Could not find script '{}' in [tool.pipplus.{}] in {}".format(
                     values,
                     self._TOML_SECTION,
                     self.toml_filename,
@@ -46,7 +46,7 @@ class RunCommand(PPMCommand):
                 script_value = script_value[os.name]
             else:
                 raise ValueError(
-                    "Could not find os '{}' in in [tool.ppm.{}.{}] in {}".format(
+                    "Could not find os '{}' in in [tool.pipplus.{}.{}] in {}".format(
                         os.name,
                         self._TOML_SECTION,
                         values,
@@ -57,7 +57,7 @@ class RunCommand(PPMCommand):
         command = ' '.join(script_value.split(' ') + (self.extras if self.extras else []))
         command = self._parse_replacements(command)
 
-        print('ppm run {} => "{}"'.format(values, command))
+        print('pipplus run {} => "{}"'.format(values, command))
 
         # self._execute_subprocess(command)
         RunCommand._execute_system(command)

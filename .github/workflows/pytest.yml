@@ -21,7 +21,5 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .[test]
-      - name: Run tests
-        run: pytest tests --doctest-modules --cov=ppm
-      - name: Run MyPy
-        run: mypy .
+      - name: Run Validation
+        run: ppm run validate

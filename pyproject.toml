@@ -1,13 +1,13 @@
 [project]
-name = "ppm"
-version = "0.0.1"
+name = "pipplus"
+version = "0.1.0"
 author = "Adam Weeden"
 author_email = "adamweeden@gmail.com"
-description = "a package manager for python"
+description = "A pip addon that expands what's possible with python package management"
 readme = "README.md"
 long_description = "file: README.md"
 long_description_content_type = "text/markdown"
-url = "https://github.com/TheCleric/ppm"
+url = "https://github.com/TheCleric/pipplus"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -18,25 +18,30 @@ classifiers = [
 ]
 python_requires = ">=3"
 keywords = "packages packaging"
-install_requires = []
+install_requires = [
+    "setuptools>=40.8.0",
+    "toml>=0.10.1",
+    "wheel>=0.35.1",
+    "ppsetuptools>=0.9.2",
+    "twine",
+]
 include_package_data = true
 
 [project.extras_require]
 dev = [
     "autopep8>=1.5.4",
-    "setuptools>=40.8.0",
-    "toml>=0.10.1"
 ]
 test = [
     "pylint>=2.6.0",
     "pytest>=6.0.2",
     "mypy>=0.782",
-    "pytest-cov>=2.10.1"
+    "pytest-cov>=2.10.1",
 ]
 
 [project.entry_points]
 console_scripts = [
-    "ppm=ppm.ppm:main"
+    "ppm=pipplus.pipplus:main",
+    "pipplus=pipplus.pipplus:main",
 ]
 
 [build-system]
@@ -44,25 +49,29 @@ requires = [
     "setuptools>=40.8.0",
     "wheel>=0.35.1",
     "ppsetuptools>=0.9.2",
-    "twine"
+    "twine",
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.autopep8]
 max_line_length = 120
 
-[tool.ppm.scripts]
-autopep8    = "autopep8 -i -r -vv ppm tests setup.py"
+[tool.isort]
+line_length = 120
+
+[tool.pipplus.scripts]
+autopep8    = "autopep8 -i -r -vv pipplus tests setup.py"
 build       = "ppm run clean && python setup.py sdist bdist_wheel && twine check dist/*"
-check       = "ppm run format && ppm run pylint && ppm run mypy && ppm run test && ppm run build"
+validate    = "ppm run pylint && ppm run mypy && ppm run test && ppm run build"
 clean       = "python setup.py clean --all"
-format      = "ppm run isort && ppm run autopep8"
+format      = "ppm run isort && pipplus run autopep8"
 install     = "pip install -e .[dev,test]"
 install_all = "pip install -e .[dev,test]"
-isort       = "isort --atomic ppm tests setup.py"
+isort       = "isort --atomic pipplus tests setup.py"
 mypy        = "mypy ."
-pylint      = "pylint ppm tests setup.py"
-test        = "pytest tests --doctest-modules --cov=ppm --cov-report term-missing"
+precommit   = "ppm run format && ppm run validate"
+pylint      = "pylint pipplus tests setup.py"
+test        = "pytest tests --doctest-modules --cov=pipplus --cov-report term-missing"
 
 [tool.pylint.pep8]
 'max-line-length' = 120

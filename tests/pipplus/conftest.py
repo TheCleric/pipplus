@@ -7,7 +7,7 @@ import pytest
 def _mock_toml() -> Dict:
     return {
         'tool': {
-            'ppm': {
+            'pipplus': {
                 'scripts': {
                     'TESTING': 'TESTING 1 2 3 4',
                     'OS_TESTING': {

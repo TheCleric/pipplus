@@ -30,7 +30,7 @@ class SubCommandAction(argparse.Action):
         self.parent.execute(parser, namespace, values, option_string=None)
 
 
-class PPMCommand(ABC):
+class PipPlusCommand(ABC):
     _TOML_SECTION: Optional[str] = None
 
     @abstractmethod
@@ -39,7 +39,7 @@ class PPMCommand(ABC):
         self.toml_filename = toml_filename
         self.extras = extras
         self.project_root = '.'
-        toml_data = self._load_toml(toml_filename, recurse_up=True).get('tool', {}).get('ppm', {})
+        toml_data = self._load_toml(toml_filename, recurse_up=True).get('tool', {}).get('pipplus', {})
         self.toml = toml_data if not self._TOML_SECTION else toml_data.get(self._TOML_SECTION, {})
 
     @abstractmethod

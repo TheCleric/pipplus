@@ -1,4 +1,6 @@
 import argparse
+import logging
+import sys
 from typing import List, Optional, Tuple
 
 from . import run
@@ -19,7 +21,11 @@ def process(cli_args: List[str]) -> Optional[argparse.Namespace]:
         parser.print_help()
         return None
 
-    return parser.parse_args(cli_args)
+    try:
+        return parser.parse_args(cli_args)
+    except Exception as ex:  # pylint: disable=broad-except
+        logging.error(ex)
+        sys.exit(-1)
 
 
 def _parse_extra(argv: List[str]) -> Tuple[List[str], List[str]]:

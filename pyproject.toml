@@ -56,11 +56,14 @@ build-backend = "setuptools.build_meta"
 [tool.autopep8]
 max_line_length = 120
 
+[tool.coverage.report]
+fail_under = 100
+
 [tool.isort]
 line_length = 120
 
 [tool.pipplus.scripts]
-autopep8    = "autopep8 -i -r -vv pipplus tests setup.py"
+autopep8    = "autopep8 -i -r pipplus tests setup.py"
 build       = "ppm run clean && python setup.py sdist bdist_wheel && twine check dist/*"
 validate    = "ppm run pylint && ppm run mypy && ppm run test && ppm run build"
 clean       = "python setup.py clean --all"

@@ -48,7 +48,30 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.autopep8]
+max_line_length = 120
+
 [tool.ppm.scripts]
-test = "pytest tests --doctest-modules --cov=ppm"
-clean = "del /Q $PROJECT_ROOT\\build || del /Q $PROJECT_ROOT\\dist || del /Q $PROJECT_ROOT\\*.egg_info"
-build = "ppm run clean && python setup.py sdist bdist_wheel && twine check dist/*"
+autopep8    = "autopep8 -i -r -vv ppm tests setup.py"
+build       = "ppm run clean && python setup.py sdist bdist_wheel && twine check dist/*"
+check       = "ppm run format && ppm run pylint && ppm run mypy && ppm run test && ppm run build"
+clean       = "python setup.py clean --all"
+format      = "ppm run isort && ppm run autopep8"
+install     = "pip install -e .[dev,test]"
+install_all = "pip install -e .[dev,test]"
+isort       = "isort --atomic ppm tests setup.py"
+mypy        = "mypy ."
+pylint      = "pylint ppm tests setup.py"
+test        = "pytest tests --doctest-modules --cov=ppm --cov-report term-missing"
+
+[tool.pylint.pep8]
+'max-line-length' = 120
+'fail-under' = 10
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "too-few-public-methods"
+]

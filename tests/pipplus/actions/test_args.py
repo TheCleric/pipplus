@@ -47,7 +47,7 @@ def test_process_run_invalid_script(mock_toml: Dict) -> None:
         cast(MagicMock, os.system).assert_not_called()
 
         # pylint: disable=no-member
-        cast(MagicMock, sys.exit).assert_called_once()
+        cast(MagicMock, sys.exit).assert_called_once_with(-1)
 
 
 @patch('argparse.ArgumentParser.print_help', MagicMock())

@@ -2,6 +2,8 @@
 
 An enhancement for pip that enables npm type commands for your python project.
 
+Works with Python 3.6+
+
 ## Commands
 
 Currently supports `npm run ...` type commands for scripts setup in the pyproject.toml file like so:

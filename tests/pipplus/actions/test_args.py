@@ -1,9 +1,13 @@
 import os
 import sys
-from typing import Dict, cast
+from typing import Any, Dict, cast
 from unittest.mock import MagicMock, patch
 
 from pipplus.actions import args
+
+
+def _thrower(*_args: Any, **kwargs: Any) -> None:
+    raise Exception("TEST")
 
 
 def test_parse_extra() -> None:
@@ -59,3 +63,13 @@ def test_process_no_args(mock_toml: Dict) -> None:
 
         # pylint: disable=no-member
         cast(MagicMock, args.argparse.ArgumentParser.print_help).assert_called_once()
+
+
+@patch('sys.exit', MagicMock())
+@patch('argparse.ArgumentParser.parse_args', _thrower)
+def test_process_exception_handling(mock_toml: Dict) -> None:
+    with patch('pipplus.actions.pipplus_command.PipPlusCommand._load_toml', MagicMock(return_value=mock_toml)):
+        args.process(['help', 'run'])
+
+        # pylint: disable=no-member
+        cast(MagicMock, sys.exit).assert_called_once_with(-1)

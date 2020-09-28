@@ -40,12 +40,18 @@ class PipPlusCommand(ABC):
         self.extras = extras
         self.project_root = '.'
         toml_data = self._load_toml(toml_filename, recurse_up=True).get('tool', {}).get('pipplus', {})
-        self.toml = toml_data if not self._TOML_SECTION else toml_data.get(self._TOML_SECTION, {})
+        toml_subset = toml_data.get(self._TOML_SECTION)
+        self.toml = toml_subset if toml_subset else toml_data
+        self.parser: Optional[argparse.ArgumentParser] = None
 
     @abstractmethod
     def execute(self, parser: argparse.ArgumentParser, namespace: argparse.Namespace,
                 values: Union[str, Sequence[Any], None], option_string: Optional[str] = None) -> None:
         raise NotImplementedError
+
+    def print_usage(self) -> None:
+        assert self.parser is not None
+        self.parser.print_usage()
 
     def _load_toml(self, toml_filename: str, start_in: Union[str, pathlib.Path] = '.',
                    recurse_up: bool = True) -> Dict:
@@ -64,3 +70,10 @@ class PipPlusCommand(ABC):
         raise TOMLNotFoundException(
             "Could not find {} in {} (recurse_up={})".format(toml_filename, start_in, recurse_up)
         )
+
+
+class PipPlusCommandExecutionException(Exception):
+    def __init__(self, message: str, command: PipPlusCommand):
+        super().__init__(message)
+
+        self.command = command

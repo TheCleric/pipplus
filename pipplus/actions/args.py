@@ -3,7 +3,8 @@ import logging
 import sys
 from typing import List, Optional, Tuple
 
-from . import run
+from . import help as _help
+from . import pipplus_command, run
 
 
 def process(cli_args: List[str]) -> Optional[argparse.Namespace]:
@@ -14,8 +15,7 @@ def process(cli_args: List[str]) -> Optional[argparse.Namespace]:
 
     run.RunCommand(subparsers, extras=extras)
 
-    parser_help = subparsers.add_parser('help')
-    parser_help.add_argument('command', nargs="?", default=None)
+    _help.HelpCommand(subparsers, extras=extras)
 
     if len(cli_args) < 1:
         parser.print_help()
@@ -23,8 +23,13 @@ def process(cli_args: List[str]) -> Optional[argparse.Namespace]:
 
     try:
         return parser.parse_args(cli_args)
+    except pipplus_command.PipPlusCommandExecutionException as ppcee:
+        logging.error(ppcee)
+        ppcee.command.print_usage()
+        sys.exit(-1)
     except Exception as ex:  # pylint: disable=broad-except
         logging.error(ex)
+        parser.print_usage()
         sys.exit(-1)
 
 

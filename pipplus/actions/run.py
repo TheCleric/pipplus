@@ -5,7 +5,7 @@ import os
 import sys
 from typing import Any, List, Optional, Sequence, Union
 
-from .pipplus_command import DEFAULT_TOML_FILENAME, PipPlusCommand, SubCommandAction
+from .pipplus_command import DEFAULT_TOML_FILENAME, PipPlusCommand, PipPlusCommandExecutionException, SubCommandAction
 
 
 class RunCommand(PipPlusCommand):
@@ -14,30 +14,31 @@ class RunCommand(PipPlusCommand):
     def __init__(self, arg_parser: argparse._SubParsersAction, extras: Optional[List[str]] = None,
                  toml_filename: str = DEFAULT_TOML_FILENAME) -> None:
         super().__init__(arg_parser, extras, toml_filename)
-        self.run_parser = arg_parser.add_parser(
+        self.parser = arg_parser.add_parser(
             'run-script',
             aliases=['run'],
             description="Run a script set in the [tools.pipplus.scripts] table of the {}".format(toml_filename),
         )
-        self.run_parser.add_argument(
+        self.parser.add_argument(
             'run_command',
             metavar='<command>',
             action=SubCommandAction,
             parent=self,
         )
-        self.run_parser.add_argument('extra', metavar='', nargs="*")
+        self.parser.add_argument('extra', metavar='', nargs="*")
 
         self.replacements = {'$PROJECT_ROOT': self.project_root}
 
     def execute(self, parser: argparse.ArgumentParser, namespace: argparse.Namespace,
                 values: Union[str, Sequence[Any], None], option_string: Optional[str] = None) -> None:
         if values not in self.toml or not self.toml[values]:
-            raise ValueError(
+            raise PipPlusCommandExecutionException(
                 "Could not find script '{}' in [tool.pipplus.{}] in {}".format(
                     values,
                     self._TOML_SECTION,
                     self.toml_filename,
-                )
+                ),
+                self
             )
 
         script_value = self.toml[values]

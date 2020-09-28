@@ -97,7 +97,7 @@ def test_run_command_bad_script(mock_toml: Dict) -> None:
             recurse_up=True
         )
 
-        with pytest.raises(ValueError):
+        with pytest.raises(pipplus_command.PipPlusCommandExecutionException):
             parser.parse_args(tests_args)
 
 

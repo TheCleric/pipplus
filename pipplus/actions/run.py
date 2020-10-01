@@ -72,7 +72,11 @@ class RunCommand(PipPlusCommand):
     @staticmethod
     @func_logger.log
     def _execute_system(command: str) -> int:
-        return os.system(command)
+        result = os.system(command)
+        if result >= 256:
+            result = result >> 8
+
+        return result
 
     # Leaving this here to fix later. Does not respect virtual environments
     # def _execute_subprocess(self, command: str) -> None:

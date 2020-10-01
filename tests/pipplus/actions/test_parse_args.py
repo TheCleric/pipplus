@@ -29,7 +29,7 @@ def test_parse_extra_no_extra() -> None:
     assert extra == []
 
 
-@patch('os.system', MagicMock())
+@patch('os.system', MagicMock(return_value=0))
 @patch('sys.exit', MagicMock())
 def test_process_run(mock_config: Dict) -> None:
     test_args = ['run', 'TESTING']
@@ -43,7 +43,7 @@ def test_process_run(mock_config: Dict) -> None:
         cast(MagicMock, sys.exit).assert_called_once()
 
 
-@patch('os.system', MagicMock())
+@patch('os.system', MagicMock(return_value=0))
 @patch('sys.exit', MagicMock())
 def test_process_run_invalid_script(mock_config: Dict) -> None:
     test_args = ['run', 'TESTING_DOES_NOT_EXIST']
@@ -54,7 +54,7 @@ def test_process_run_invalid_script(mock_config: Dict) -> None:
         cast(MagicMock, os.system).assert_not_called()
 
         # pylint: disable=no-member
-        cast(MagicMock, sys.exit).assert_called_once_with(-1)
+        cast(MagicMock, sys.exit).assert_called_once_with(1)
 
 
 @patch('argparse.ArgumentParser.print_help', MagicMock())
@@ -75,7 +75,7 @@ def test_process_exception_handling(mock_config: Dict) -> None:
         parse_args.process(['help', 'run'])
 
         # pylint: disable=no-member
-        cast(MagicMock, sys.exit).assert_called_once_with(-1)
+        cast(MagicMock, sys.exit).assert_called_once_with(1)
 
 
 def test_pipplus_command_load_toml() -> None:

@@ -9,7 +9,7 @@ import pytest
 from pipplus.actions import pipplus_command, run
 
 
-@patch('os.system', MagicMock())
+@patch('os.system', MagicMock(return_value=0))
 @patch('sys.exit', MagicMock())
 def test_run_command(mock_config: Dict) -> None:
     tests_args = ['run', 'TESTING']
@@ -30,7 +30,7 @@ def test_run_command(mock_config: Dict) -> None:
     cast(MagicMock, sys.exit).assert_called_once()
 
 
-@patch('os.system', MagicMock())
+@patch('os.system', MagicMock(return_value=0))
 @patch('sys.exit', MagicMock())
 @patch('os.name', 'nt')
 def test_run_command_os(mock_config: Dict) -> None:
@@ -52,7 +52,7 @@ def test_run_command_os(mock_config: Dict) -> None:
     cast(MagicMock, sys.exit).assert_called_once()
 
 
-@patch('os.system', MagicMock())  # Shouldn't need it, but just in case
+@patch('os.system', MagicMock(return_value=0))  # Shouldn't need it, but just in case
 @patch('os.name', 'posix')
 def test_run_command_os_missing(mock_config: Dict) -> None:
     tests_args = ['run', 'OS_TESTING']
@@ -66,7 +66,7 @@ def test_run_command_os_missing(mock_config: Dict) -> None:
         parser.parse_args(tests_args)
 
 
-@patch('os.system', MagicMock())  # Shouldn't need it, but just in case
+@patch('os.system', MagicMock(return_value=0))  # Shouldn't need it, but just in case
 def test_run_command_bad_script(mock_config: Dict) -> None:
     tests_args = ['run', 'non-existent']
 
@@ -79,7 +79,7 @@ def test_run_command_bad_script(mock_config: Dict) -> None:
         parser.parse_args(tests_args)
 
 
-@patch('os.system', MagicMock())  # Shouldn't need it, but just in case
+@patch('os.system', MagicMock(return_value=0))  # Shouldn't need it, but just in case
 def test_run_command_no_script(mock_config: Dict) -> None:
     tests_args = ['run']
 

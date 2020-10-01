@@ -8,13 +8,8 @@ from .actions import parse_args
 
 
 @func_logger.log
-def main(cli_args: Optional[List[str]] = None) -> int:
-    try:
-        parse_args.process(cli_args[1:] if cli_args else sys.argv[1:])
-    except SystemExit as sysex:
-        return sysex.code
-
-    return 0
+def main(cli_args: Optional[List[str]] = None) -> None:
+    parse_args.process(cli_args[1:] if cli_args else sys.argv[1:])
 
 
 def setup_main() -> None:

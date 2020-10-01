@@ -40,11 +40,11 @@ def process(cli_args: List[str]) -> Optional[argparse.Namespace]:
     except pipplus_command.PipPlusCommandExecutionException as ppcee:
         logging.error(ppcee)
         ppcee.command.print_usage()
-        return sys.exit(-1)
+        return sys.exit(1)
     except Exception as ex:  # pylint: disable=broad-except
         logging.error(ex)
         parser.print_usage()
-        return sys.exit(-1)
+        return sys.exit(1)
 
 
 @func_logger.log

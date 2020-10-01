@@ -1,11 +1,11 @@
 import sys
 from typing import List, Optional
 
-from .actions import args
+from .actions import parse_args
 
 
 def main(cli_args: Optional[List[str]] = None) -> None:
-    args.process(cli_args[1:] if cli_args else sys.argv[1:])
+    parse_args.process(cli_args[1:] if cli_args else sys.argv[1:])
 
 
 def setup_main() -> None:

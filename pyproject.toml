@@ -41,8 +41,8 @@ test = [
 
 [project.entry_points]
 console_scripts = [
-    "ppm=pipplus.pipplus:main",
-    "pipplus=pipplus.pipplus:main",
+    "ppm=pipplus.pipplus_cmd_line:main",
+    "pipplus=pipplus.pipplus_cmd_line:main",
 ]
 
 [build-system]

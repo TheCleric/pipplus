@@ -1,7 +1,10 @@
 import os
+import pathlib
 import sys
 from typing import Any, Dict, cast
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from pipplus.actions import parse_args
 
@@ -28,13 +31,13 @@ def test_parse_extra_no_extra() -> None:
 
 @patch('os.system', MagicMock())
 @patch('sys.exit', MagicMock())
-def test_process_run(mock_toml: Dict) -> None:
+def test_process_run(mock_config: Dict) -> None:
     test_args = ['run', 'TESTING']
-    with patch('pipplus.actions.pipplus_command.PipPlusCommand._load_toml', MagicMock(return_value=mock_toml)):
+    with patch('pipplus.actions.parse_args._load_toml', MagicMock(return_value=mock_config)):
         parse_args.process(test_args)
 
         # pylint: disable=no-member
-        cast(MagicMock, os.system).assert_called_once_with(mock_toml['tool']['pipplus']['scripts']['TESTING'])
+        cast(MagicMock, os.system).assert_called_once_with(mock_config['scripts']['TESTING'])
 
         # pylint: disable=no-member
         cast(MagicMock, sys.exit).assert_called_once()
@@ -42,9 +45,9 @@ def test_process_run(mock_toml: Dict) -> None:
 
 @patch('os.system', MagicMock())
 @patch('sys.exit', MagicMock())
-def test_process_run_invalid_script(mock_toml: Dict) -> None:
+def test_process_run_invalid_script(mock_config: Dict) -> None:
     test_args = ['run', 'TESTING_DOES_NOT_EXIST']
-    with patch('pipplus.actions.pipplus_command.PipPlusCommand._load_toml', MagicMock(return_value=mock_toml)):
+    with patch('pipplus.actions.parse_args._load_toml', MagicMock(return_value=mock_config)):
         parse_args.process(test_args)
 
         # pylint: disable=no-member
@@ -55,8 +58,8 @@ def test_process_run_invalid_script(mock_toml: Dict) -> None:
 
 
 @patch('argparse.ArgumentParser.print_help', MagicMock())
-def test_process_no_args(mock_toml: Dict) -> None:
-    with patch('pipplus.actions.pipplus_command.PipPlusCommand._load_toml', MagicMock(return_value=mock_toml)):
+def test_process_no_args(mock_config: Dict) -> None:
+    with patch('pipplus.actions.parse_args._load_toml', MagicMock(return_value=mock_config)):
         result = parse_args.process([])
 
         assert result is None
@@ -67,9 +70,34 @@ def test_process_no_args(mock_toml: Dict) -> None:
 
 @patch('sys.exit', MagicMock())
 @patch('argparse.ArgumentParser.parse_args', _thrower)
-def test_process_exception_handling(mock_toml: Dict) -> None:
-    with patch('pipplus.actions.pipplus_command.PipPlusCommand._load_toml', MagicMock(return_value=mock_toml)):
+def test_process_exception_handling(mock_config: Dict) -> None:
+    with patch('pipplus.actions.parse_args._load_toml', MagicMock(return_value=mock_config)):
         parse_args.process(['help', 'run'])
 
         # pylint: disable=no-member
         cast(MagicMock, sys.exit).assert_called_once_with(-1)
+
+
+def test_pipplus_command_load_toml() -> None:
+    start_in = os.path.join(pathlib.Path(__file__).parent.parent.absolute(), 'data')
+
+    # pylint: disable=protected-access
+    toml = parse_args._load_toml(parse_args.DEFAULT_TOML_FILENAME, start_in)
+
+    assert toml is not None
+    assert toml['testing']
+
+
+def test_pipplus_command_load_toml_recurse_up() -> None:
+    start_in = os.path.join(pathlib.Path(__file__).parent.parent.absolute(), 'data', parse_args.DEFAULT_TOML_FILENAME)
+
+    # pylint: disable=protected-access
+    toml = parse_args._load_toml(parse_args.DEFAULT_TOML_FILENAME, start_in)
+
+    assert toml is not None
+
+
+def test_pipplus_command_load_toml_no_toml() -> None:
+    with pytest.raises(parse_args.TOMLNotFoundException):
+        # pylint: disable=protected-access
+        parse_args._load_toml(parse_args.DEFAULT_TOML_FILENAME + '_____', os.path.abspath(os.sep))

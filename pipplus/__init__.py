@@ -1,1 +1,1 @@
-from . import pipplus
+from . import pipplus_cmd_line

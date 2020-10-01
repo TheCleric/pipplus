@@ -1,3 +1,7 @@
 import ppsetuptools
 
-ppsetuptools.setup()
+ppsetuptools.setup(
+    packages=ppsetuptools.find_packages(  # type: ignore
+        exclude=["tests", "tests.*"]
+    ),
+)
